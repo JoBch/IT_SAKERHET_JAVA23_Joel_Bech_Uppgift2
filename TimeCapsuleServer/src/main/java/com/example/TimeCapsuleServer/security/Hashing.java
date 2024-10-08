@@ -1,8 +1,10 @@
 package com.example.TimeCapsuleServer.security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 //Hashing passwords using BCrypt
+@Component
 public class Hashing {
     private final BCryptPasswordEncoder passwordEncoder;
 

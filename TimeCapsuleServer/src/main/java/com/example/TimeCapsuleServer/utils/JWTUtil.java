@@ -44,7 +44,7 @@ public class JWTUtil {
         JWSObject jwsObject = JWSObject.parse(token);
 
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
-        return !jwsObject.verify(verifier); //Return false if the token is valid
+        return jwsObject.verify(verifier); //Return false if the token is valid
     }
 
 

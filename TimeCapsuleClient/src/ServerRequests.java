@@ -16,9 +16,13 @@ public class ServerRequests {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Authorization", "Bearer " + token);
-        conn.setDoOutput(true);
 
+        // Add authorization header only if the token is not null
+        if (token != null && !token.isEmpty()) {
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+        }
+
+        conn.setDoOutput(true);
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
@@ -35,7 +39,11 @@ public class ServerRequests {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Authorization", "Bearer " + token);
+
+        // Add authorization header only if the token is not null
+        if (token != null && !token.isEmpty()) {
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+        }
 
         int responseCode = conn.getResponseCode();
         System.out.println("GET Response Code :: " + responseCode);

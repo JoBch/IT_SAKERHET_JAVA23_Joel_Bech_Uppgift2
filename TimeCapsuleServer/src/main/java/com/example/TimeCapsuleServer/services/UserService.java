@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
-    private final Hashing hashing;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private final Hashing hashing;
 
     public UserService() {
         this.hashing = new Hashing();

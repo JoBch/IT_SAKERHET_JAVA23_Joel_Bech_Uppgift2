@@ -29,20 +29,16 @@ public class MessageController {
     private AESUtil aesUtil;
 
     @PostMapping("/create")
-    public String createTimeCapsule(@RequestHeader("Authorization") String token, @RequestBody MessageDTO messageDTO)
-            throws Exception {
-        //Check if the token is present
+    public String createTimeCapsule(@RequestHeader("Authorization") String token, @RequestBody MessageDTO messageDTO) throws Exception {
         if (token == null || !token.startsWith("Bearer ")) {
             return "No token provided";
         }
 
-        //Extract the token from the header and validate it
         String jwtToken = token.substring(7);
-        if (jwtUtil.validateToken(jwtToken)) {
+        if (!jwtUtil.validateToken(jwtToken)) { // Corrected token validation logic
             return "Invalid token";
         }
 
-        //Check if the token has expired
         if (jwtUtil.isTokenExpired(jwtToken)) {
             return "Token has expired";
         }
@@ -55,7 +51,6 @@ public class MessageController {
 
         String encryptedMessage = aesUtil.encryptMessage(messageDTO.getMessage());
 
-        //Create and save the message entity
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessageContent(encryptedMessage);
         messageEntity.setUser(user);
