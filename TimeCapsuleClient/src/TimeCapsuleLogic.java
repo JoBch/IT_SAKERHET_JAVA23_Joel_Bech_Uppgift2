@@ -1,3 +1,7 @@
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -15,8 +19,18 @@ public class TimeCapsuleLogic {
 
     //View all time capsules for the logged-in user
     static void viewTimeCapsules() throws IOException {
-        ServerRequests.sendGetRequest("/timecapsule/view", Main.jwtToken);
-        System.out.println(Main.jwtToken);
+        String response = ServerRequests.sendGetRequest("/timecapsule/view", Main.jwtToken);
+
+        JsonElement jsonElement = JsonParser.parseString(response);
+
+        if (jsonElement.isJsonArray()) {
+            JsonArray jsonArray = jsonElement.getAsJsonArray();
+
+            System.out.println("Time Capsules:");
+            for (JsonElement element : jsonArray) {
+                System.out.println("- " + element.getAsString());
+            }
+        } else System.out.println("Unexpected response format: " + response);
     }
 
 }

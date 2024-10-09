@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+//No checking for token here because we have to able to access this without a valid token
 @RestController
 @RequestMapping("/users")
 public class UserController {

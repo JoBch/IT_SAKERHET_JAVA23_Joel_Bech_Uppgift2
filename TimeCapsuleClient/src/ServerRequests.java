@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ServerRequests {
 
-    private static final String BASE_URL = "http://localhost:8080"; // Change to your backend server URL
+    private static final String BASE_URL = "http://localhost:8080";
 
 
     static String sendPostRequest(String endpoint, String requestBody, String token) throws IOException {
@@ -17,12 +17,13 @@ public class ServerRequests {
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
 
-        // Add authorization header only if the token is not null
+        //Add authorization header only if the token is not null
         if (token != null && !token.isEmpty()) {
             conn.setRequestProperty("Authorization", "Bearer " + token);
-        }
+        } else conn.setRequestProperty("Authorization", "" + null);
 
         conn.setDoOutput(true);
+
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
@@ -40,10 +41,11 @@ public class ServerRequests {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-Type", "application/json");
 
-        // Add authorization header only if the token is not null
+        //Add authorization header only if the token is not null
         if (token != null && !token.isEmpty()) {
             conn.setRequestProperty("Authorization", "Bearer " + token);
-        }
+        } else conn.setRequestProperty("Authorization", "" + null);
+
 
         int responseCode = conn.getResponseCode();
         System.out.println("GET Response Code :: " + responseCode);
@@ -59,7 +61,7 @@ public class ServerRequests {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            System.out.println("Response: " + response);
+            //System.out.println("Response: " + response);
             return response.toString();
         }
     }

@@ -30,12 +30,14 @@ public class MessageController {
 
     @PostMapping("/create")
     public String createTimeCapsule(@RequestHeader("Authorization") String token, @RequestBody MessageDTO messageDTO) throws Exception {
-        if (token == null || !token.startsWith("Bearer ")) {
+
+        if (token == null) {
             return "No token provided";
         }
 
         String jwtToken = token.substring(7);
-        if (!jwtUtil.validateToken(jwtToken)) { // Corrected token validation logic
+
+        if (!jwtUtil.validateToken(jwtToken)) {
             return "Invalid token";
         }
 
@@ -63,9 +65,19 @@ public class MessageController {
 
     @GetMapping("/view")
     public List<String> viewTimeCapsules(@RequestHeader("Authorization") String token) throws Exception {
+
+        if (token == null) {
+            return List.of("No token provided");
+        }
+
         String jwtToken = token.substring(7);
-        if (jwtUtil.validateToken(jwtToken)) {
+
+        if (!jwtUtil.validateToken(jwtToken)) {
             return List.of("Invalid token");
+        }
+
+        if (jwtUtil.isTokenExpired(jwtToken)) {
+            return List.of("Token has expired");
         }
 
         String username = jwtUtil.extractUsername(jwtToken);
