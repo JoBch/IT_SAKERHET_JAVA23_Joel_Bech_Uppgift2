@@ -19,6 +19,9 @@ public class MessageEntity {
     @Column(name = "message_id")
     private int id;
 
+    @Column(name = "salt")
+    private String salt;
+
     @Column(name = "message")
     private String messageContent;
 

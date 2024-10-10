@@ -61,7 +61,7 @@ public class ServerRequests {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            //System.out.println("Response: " + response);
+            System.out.println("Response from server: " + response);
             return response.toString();
         }
     }

@@ -45,23 +45,27 @@ public class MessageController {
             return "Token has expired";
         }
 
-        String username = jwtUtil.extractUsername(jwtToken);
-        UserEntity user = userRepository.findByEmail(username);
+        String userEmail = jwtUtil.extractEmail(jwtToken);
+        UserEntity user = userRepository.findByEmail(userEmail);
         if (user == null) {
             return "User not found";
         }
 
-        String encryptedMessage = aesUtil.encryptMessage(messageDTO.getMessage());
+        //Generate a salt for this message
+        String salt = aesUtil.generateSalt();
+
+        //Encrypt the message using the users password and the generated salt stored in the db
+        String encryptedMessage = aesUtil.encryptMessage(messageDTO.getMessage(), user.getPassword(), salt);
 
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessageContent(encryptedMessage);
+        messageEntity.setSalt(salt);
         messageEntity.setUser(user);
 
         messageRepository.save(messageEntity);
 
         return "Time capsule created!";
     }
-
 
     @GetMapping("/view")
     public List<String> viewTimeCapsules(@RequestHeader("Authorization") String token) throws Exception {
@@ -79,18 +83,16 @@ public class MessageController {
         if (jwtUtil.isTokenExpired(jwtToken)) {
             return List.of("Token has expired");
         }
-
-        String username = jwtUtil.extractUsername(jwtToken);
+        String username = jwtUtil.extractEmail(jwtToken);
         UserEntity user = userRepository.findByEmail(username);
 
         //Fetch all time capsules for the user
         List<MessageEntity> messages = user.getMessages();
 
-        //Decrypt each message before returning
         return messages.stream()
                 .map(msg -> {
                     try {
-                        return aesUtil.decryptMessage(msg.getMessageContent());
+                        return aesUtil.decryptMessage(msg.getMessageContent(), user.getPassword(), msg.getSalt());
                     } catch (Exception e) {
                         e.printStackTrace();
                         return "Error decrypting message";

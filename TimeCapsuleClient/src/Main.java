@@ -11,21 +11,21 @@ public class Main {
 
         while (true) {
             if (!loggedIn) {
-                System.out.println("1. Register");
-                System.out.println("2. Login");
-                System.out.print("Choose an option: ");
+                System.out.println("1. Login \n2. Register \n3. Exit \nChoose your option");
                 int choice = Integer.parseInt(scanner.nextLine());
 
-                if (choice == 1) {
-                    register(scanner);
-                } else if (choice == 2) {
-                    loggedIn = login(scanner);
+                switch (choice) {
+                    case 1:
+                        loggedIn = login(scanner);
+                        break;
+                    case 2:
+                        register(scanner);
+                        break;
+                    case 3:
+                        System.exit(0);
                 }
             } else {
-                System.out.println("1. Create Time Capsule");
-                System.out.println("2. View Time Capsules");
-                System.out.println("3. Logout");
-                System.out.print("Choose an option: ");
+                System.out.println("1. Create Time Capsule \n2. View Time Capsules \n3. Logout \nChoose an option: ");
                 int choice = Integer.parseInt(scanner.nextLine());
 
                 switch (choice) {
@@ -69,17 +69,14 @@ public class Main {
         String response = ServerRequests.sendPostRequest("/users/login", requestBody, null);
 
         if (response.contains("token")) {
-            jwtToken = extractFieldFromJson(response, "token");
-            System.out.println("Login successful! JWT Token: " + jwtToken);
+            jwtToken = extractFieldFromJson(response);
             return true;
-        } else {
-            System.out.println("Login failed! " + response);
-            return false;
-        }
+        } else return false;
+
     }
 
-    private static String extractFieldFromJson(String json, String field) {
-        int startIndex = json.indexOf(field) + field.length() + 3; // Finding the start of the field value
+    private static String extractFieldFromJson(String json) {
+        int startIndex = json.indexOf("token") + "token".length() + 3; //Finding the start of the field value
         int endIndex = json.indexOf("\"", startIndex);
         return json.substring(startIndex, endIndex);
     }

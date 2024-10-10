@@ -46,6 +46,7 @@ public class UserController {
             //Return token in response
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
+            response.put("Message", "User logged in successfully!");
             return ResponseEntity.ok(response).getBody();
         } else {
             return Map.of("error", "Invalid email or password");

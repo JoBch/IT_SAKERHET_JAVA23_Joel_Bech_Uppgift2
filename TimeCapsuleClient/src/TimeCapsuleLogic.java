@@ -14,7 +14,6 @@ public class TimeCapsuleLogic {
 
         String requestBody = String.format("{\"message\": \"%s\"}", message);
         ServerRequests.sendPostRequest("/timecapsule/create", requestBody, Main.jwtToken);
-        System.out.println(Main.jwtToken);
     }
 
     //View all time capsules for the logged-in user
